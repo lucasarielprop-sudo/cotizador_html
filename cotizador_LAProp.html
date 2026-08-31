@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Solicitá una estimación orientativa del valor de tu propiedad con LA Propiedades.">
+  <title>Cotizá tu propiedad | LA Propiedades</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    #laprop-cotizador {
+      --lap-navy: #0b1b2a;
+      --lap-navy-2: #132838;
+      --lap-gold: #cdbE6b;
+      --lap-gold-dark: #9b783a;
+      --lap-gold-light: #ffeda1;
+      --lap-ink: #17212b;
+      --lap-muted: #6b7280;
+      --lap-line: #dedede;
+      --lap-light: #f7f6f2;
+      --lap-white: #ffffff;
+      --lap-danger: #a33333;
+      color: var(--lap-ink);
+      font-family: Poppins, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      background: #fff;
+      isolation: isolate;
+    }
+    #laprop-cotizador *, #laprop-cotizador *::before, #laprop-cotizador *::after { box-sizing: border-box; }
+    #laprop-cotizador button, #laprop-cotizador input, #laprop-cotizador select, #laprop-cotizador textarea { font: inherit; }
+    .lap-shell { min-height: 100vh; background: linear-gradient(150deg, #f4f1e8 0%, #fff 42%, #f4f5f5 100%); }
+    .lap-hero {
+      position: relative; overflow: hidden; color: #fff;
+      background:
+        linear-gradient(90deg, rgba(6,16,25,.96), rgba(11,27,42,.88) 52%, rgba(11,27,42,.66)),
+        url("https://lapropiedades.com.ar/wp-content/uploads/2026/01/logo-blanco-800.png") right -120px center/540px auto no-repeat,
+        var(--lap-navy);
+    }
+    .lap-hero::after { content:""; position:absolute; inset:auto -12% -180px auto; width:480px; height:340px; background:radial-gradient(circle, rgba(255,237,161,.22), transparent 68%); }
+    .lap-container { width:min(1120px, calc(100% - 36px)); margin:0 auto; }
+    .lap-hero-inner { position:relative; z-index:1; padding:30px 0 76px; }
+    .lap-brand { display:flex; align-items:center; gap:14px; color:#fff; text-decoration:none; width:max-content; }
+    .lap-mark { display:flex; align-items:flex-end; gap:4px; height:42px; }
+    .lap-mark i { display:block; width:9px; background:linear-gradient(90deg,var(--lap-gold-dark),var(--lap-gold-light),var(--lap-gold-dark)); }
+    .lap-mark i:nth-child(1){height:22px}.lap-mark i:nth-child(2){height:32px}.lap-mark i:nth-child(3){height:42px}
+    .lap-brand-copy { line-height:1.05; letter-spacing:.08em; text-transform:uppercase; }
+    .lap-brand-copy strong { display:block; font-size:17px; font-weight:600; }
+    .lap-brand-copy span { display:block; margin-top:4px; color:#e7d79b; font-family:Georgia,serif; font-size:13px; }
+    .lap-eyebrow { margin:58px 0 12px; color:var(--lap-gold-light); font-size:13px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; }
+    .lap-hero h1 { max-width:760px; margin:0; font-size:clamp(34px,5vw,60px); line-height:1.08; letter-spacing:-.035em; }
+    .lap-hero p { max-width:670px; margin:18px 0 0; color:#e7ebed; font-size:clamp(16px,2vw,20px); font-weight:300; }
+    .lap-panel { position:relative; z-index:2; margin:-40px auto 0; padding-bottom:70px; }
+    .lap-card { overflow:hidden; background:#fff; border:1px solid rgba(155,120,58,.18); border-radius:22px; box-shadow:0 20px 58px rgba(11,27,42,.13); }
+    .lap-card-top { display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center; padding:26px 30px; background:#fbfaf6; border-bottom:1px solid #ebe7dc; }
+    .lap-card-top h2 { margin:0; font-size:21px; }
+    .lap-card-top p { margin:4px 0 0; color:var(--lap-muted); font-size:13px; }
+    .lap-demo-button { border:0; border-bottom:1px solid var(--lap-gold-dark); background:transparent; color:#755a2c; cursor:pointer; padding:4px 0; font-size:12px; font-weight:600; }
+    .lap-progress { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; padding:24px 30px 0; }
+    .lap-progress-step { position:relative; min-height:46px; color:#8a8f94; font-size:11px; font-weight:500; text-align:center; }
+    .lap-progress-step::before { content:""; display:block; width:100%; height:4px; margin-bottom:9px; border-radius:9px; background:#e7e7e7; transition:.25s ease; }
+    .lap-progress-step.is-active { color:var(--lap-ink); }
+    .lap-progress-step.is-active::before, .lap-progress-step.is-complete::before { background:linear-gradient(90deg,var(--lap-gold-dark),var(--lap-gold-light),var(--lap-gold-dark)); }
+    .lap-form { padding:12px 30px 30px; }
+    .lap-step { display:none; animation:lap-fade .25s ease; border:0; margin:0; padding:0; min-width:0; }
+    .lap-step.is-active { display:block; }
+    @keyframes lap-fade { from{opacity:.2; transform:translateY(5px)} to{opacity:1; transform:none} }
+    .lap-step-header { padding:20px 0 16px; }
+    .lap-step-header small { display:block; color:#9a7a3b; font-size:11px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
+    .lap-step-header h3 { margin:4px 0 0; font-size:24px; }
+    .lap-step-header p { margin:6px 0 0; color:var(--lap-muted); font-size:13px; }
+    .lap-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:18px; }
+    .lap-field { grid-column:span 6; min-width:0; }
+    .lap-field--4 { grid-column:span 4; }
+    .lap-field--3 { grid-column:span 3; }
+    .lap-field--8 { grid-column:span 8; }
+    .lap-field--12 { grid-column:1 / -1; }
+    .lap-label { display:flex; gap:5px; align-items:baseline; margin:0 0 7px; font-size:12px; font-weight:600; }
+    .lap-label em { color:#9a7a3b; font-style:normal; }
+    .lap-help { margin:5px 0 0; color:#888; font-size:10.5px; }
+    .lap-control {
+      width:100%; min-height:48px; padding:11px 13px; color:var(--lap-ink); background:#fff;
+      border:1px solid var(--lap-line); border-radius:9px; outline:none; transition:.2s ease;
+    }
+    .lap-control::placeholder { color:#a6a6a6; }
+    .lap-control:focus { border-color:#b79649; box-shadow:0 0 0 3px rgba(205,190,107,.2); }
+    .lap-control[aria-invalid="true"] { border-color:var(--lap-danger); }
+    textarea.lap-control { min-height:96px; resize:vertical; }
+    .lap-check-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+    .lap-check, .lap-consent { display:flex; align-items:flex-start; gap:9px; padding:11px 12px; border:1px solid var(--lap-line); border-radius:9px; color:#3f4850; font-size:12px; cursor:pointer; }
+    .lap-check:has(input:checked) { border-color:#b79649; background:#fffaf0; }
+    .lap-check input, .lap-consent input { margin-top:2px; accent-color:#9b783a; }
+    .lap-divider { height:1px; margin:22px 0; background:#ececec; }
+    .lap-actions { display:flex; justify-content:space-between; gap:12px; margin-top:26px; }
+    .lap-button { min-height:48px; padding:11px 24px; border:0; border-radius:9px; cursor:pointer; font-weight:600; transition:.2s ease; }
+    .lap-button:hover { transform:translateY(-1px); }
+    .lap-button--secondary { color:var(--lap-ink); background:#f0f1f1; }
+    .lap-button--gold { min-width:170px; color:#111; background:linear-gradient(90deg,var(--lap-gold-dark),var(--lap-gold-light),var(--lap-gold-dark)); box-shadow:0 8px 20px rgba(155,120,58,.2); }
+    .lap-error { display:none; margin:18px 0 0; padding:12px 14px; border-left:3px solid var(--lap-danger); background:#fff1f1; color:#7d2929; font-size:12px; }
+    .lap-error.is-visible { display:block; }
+    .lap-honeypot { position:absolute !important; width:1px !important; height:1px !important; overflow:hidden !important; opacity:0 !important; pointer-events:none !important; }
+    .lap-loading, .lap-result { display:none; padding:46px 30px; text-align:center; }
+    .lap-loading.is-visible, .lap-result.is-visible { display:block; }
+    .lap-spinner { width:50px; height:50px; margin:0 auto 18px; border:3px solid #eee; border-top-color:#b38c3f; border-radius:50%; animation:lap-spin .85s linear infinite; }
+    @keyframes lap-spin { to{transform:rotate(360deg)} }
+    .lap-loading h3, .lap-result h3 { margin:0; font-size:26px; }
+    .lap-loading p, .lap-result p { max-width:650px; margin:9px auto 0; color:var(--lap-muted); font-size:13px; }
+    .lap-value-box { max-width:620px; margin:25px auto 0; padding:30px; color:#fff; background:var(--lap-navy); border-radius:14px; }
+    .lap-value-box small { color:var(--lap-gold-light); font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    .lap-value { margin:7px 0; color:#d5ad43; font-size:clamp(34px,6vw,52px); font-weight:700; letter-spacing:-.03em; }
+    .lap-value-box p { color:#dbe1e4; }
+    .lap-result-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:24px; }
+    .lap-note { margin:20px auto 0; max-width:700px; padding:12px 15px; color:#67572f; background:#fff9e7; border:1px solid #ebd797; border-radius:8px; font-size:11px; text-align:left; }
+    .lap-privacy { display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start; margin:26px 0 0; padding:16px; background:#f7f7f7; border-radius:9px; color:#666; font-size:11px; }
+    .lap-privacy svg { width:18px; color:#9b783a; }
+    @media (max-width:760px) {
+      .lap-container { width:min(100% - 22px,1120px); }
+      .lap-hero-inner { padding:22px 0 64px; }
+      .lap-eyebrow { margin-top:42px; }
+      .lap-card { border-radius:15px; }
+      .lap-card-top { grid-template-columns:1fr; padding:22px 18px; }
+      .lap-progress { padding:18px 18px 0; }
+      .lap-progress-step span { display:none; }
+      .lap-form { padding:6px 18px 22px; }
+      .lap-field, .lap-field--3, .lap-field--4, .lap-field--8 { grid-column:1 / -1; }
+      .lap-check-grid { grid-template-columns:repeat(2,1fr); }
+      .lap-actions { flex-direction:column-reverse; }
+      .lap-button { width:100%; }
+      .lap-hero { background-image:linear-gradient(90deg,rgba(6,16,25,.97),rgba(11,27,42,.85)); }
+    }
+  </style>
+</head>
+<body style="margin:0">
+<main id="laprop-cotizador" data-api-url="http://127.0.0.1:8000">
+  <div class="lap-shell">
+    <header class="lap-hero">
+      <div class="lap-container lap-hero-inner">
+        <a class="lap-brand" href="https://lapropiedades.com.ar" aria-label="Ir al sitio de LA Propiedades">
+          <span class="lap-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="lap-brand-copy"><strong>Lucas Ariel</strong><span>Propiedades</span></span>
+        </a>
+        <div class="lap-eyebrow">Análisis comparativo de mercado</div>
+        <h1>Descubrí cuánto vale hoy tu propiedad</h1>
+        <p>Completá la ficha y analizaremos propiedades similares publicadas alrededor de la tuya. Recibirás un informe orientativo claro y descargable.</p>
+      </div>
+    </header>
+
+    <section class="lap-container lap-panel" aria-labelledby="lap-form-title">
+      <div class="lap-card">
+        <div class="lap-card-top">
+          <div><h2 id="lap-form-title">Contanos sobre tu propiedad</h2><p>Te llevará entre 3 y 5 minutos. Los campos con * son obligatorios.</p></div>
+          <button class="lap-demo-button" type="button" id="lap-load-demo">Cargar ejemplo de prueba</button>
+        </div>
+        <div class="lap-progress" aria-label="Progreso del formulario">
+          <div class="lap-progress-step is-active" data-progress="0"><span>Ubicación</span></div>
+          <div class="lap-progress-step" data-progress="1"><span>Características</span></div>
+          <div class="lap-progress-step" data-progress="2"><span>Estado y edificio</span></div>
+          <div class="lap-progress-step" data-progress="3"><span>Tus datos</span></div>
+        </div>
+
+        <form class="lap-form" id="lap-quote-form" novalidate>
+          <input class="lap-honeypot" type="text" name="sitio_web" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+          <fieldset class="lap-step is-active" data-step="0">
+            <div class="lap-step-header"><small>Paso 1 de 4</small><h3>¿Dónde está?</h3><p>La ubicación precisa permite buscar comparables realmente cercanos.</p></div>
+            <div class="lap-grid">
+              <label class="lap-field lap-field--8"><span class="lap-label">Dirección completa <em>*</em></span><input class="lap-control" name="direccion" placeholder="Ej.: Av. Niceto Vega 5120" required minlength="5" autocomplete="street-address"></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Barrio <em>*</em></span><input class="lap-control" name="barrio" placeholder="Ej.: Palermo Soho" required></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Ciudad <em>*</em></span><input class="lap-control" name="ciudad" value="CABA" required></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Provincia <em>*</em></span><input class="lap-control" name="provincia" value="Buenos Aires" required></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Tipo de inmueble <em>*</em></span><select class="lap-control" name="tipo" required><option value="">Seleccioná</option><option>Departamento</option><option>Casa</option><option>PH</option><option>Local</option><option>Oficina</option><option>Terreno</option><option>Otro</option></select></label>
+              <label class="lap-field"><span class="lap-label">Nombre del edificio o desarrollo</span><input class="lap-control" name="edificio" placeholder="Si corresponde"></label>
+              <label class="lap-field lap-field--3"><span class="lap-label">Piso</span><input class="lap-control" name="piso" placeholder="Ej.: 5°"></label>
+              <label class="lap-field lap-field--3"><span class="lap-label">Disposición <em>*</em></span><select class="lap-control" name="disposicion" required><option value="">Seleccioná</option><option>Frente</option><option>Contrafrente</option><option>Lateral</option><option>Interno</option><option>No aplica</option><option>No sé</option></select></label>
+              <label class="lap-field lap-field--3"><span class="lap-label">Orientación</span><select class="lap-control" name="orientacion"><option value="">No sé</option><option>Norte</option><option>Sur</option><option>Este</option><option>Oeste</option><option>Noreste</option><option>Noroeste</option><option>Sudeste</option><option>Sudoeste</option></select></label>
+            </div>
+            <div class="lap-actions"><span></span><button class="lap-button lap-button--gold" type="button" data-next>Siguiente</button></div>
+          </fieldset>
+
+          <fieldset class="lap-step" data-step="1">
+            <div class="lap-step-header"><small>Paso 2 de 4</small><h3>Superficies y ambientes</h3><p>Usá las superficies de la escritura, plano o ficha del inmueble.</p></div>
+            <div class="lap-grid">
+              <label class="lap-field lap-field--3"><span class="lap-label">Ambientes <em>*</em></span><input class="lap-control" type="number" name="ambientes" min="1" max="30" required></label>
+              <label class="lap-field lap-field--3"><span class="lap-label">Dormitorios <em>*</em></span><input class="lap-control" type="number" name="dormitorios" min="0" max="20" required></label>
+              <label class="lap-field lap-field--3"><span class="lap-label">Baños <em>*</em></span><input class="lap-control" type="number" name="banos" min="0" max="20" required></label>
+              <label class="lap-field lap-field--3"><span class="lap-label">Toilettes</span><input class="lap-control" type="number" name="toilettes" min="0" max="10" value="0"></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Superficie cubierta <em>*</em></span><input class="lap-control" type="number" name="superficie_cubierta" min="1" step="0.1" required><span class="lap-help">En m²</span></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Semicubierta</span><input class="lap-control" type="number" name="superficie_semicubierta" min="0" step="0.1" value="0"><span class="lap-help">Balcón, galería, etc., en m²</span></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Superficie total <em>*</em></span><input class="lap-control" type="number" name="superficie_total" min="1" step="0.1" required><span class="lap-help">En m²</span></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Superficie de terreno</span><input class="lap-control" type="number" name="superficie_terreno" min="1" step="0.1"><span class="lap-help">Solo casas, PH, locales o terrenos</span></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Antigüedad</span><input class="lap-control" type="number" name="antiguedad" min="0" max="300"><span class="lap-help">Años aproximados</span></label>
+              <label class="lap-field lap-field--4"><span class="lap-label">Expensas mensuales</span><input class="lap-control" type="number" name="expensas" min="0" step="1"><span class="lap-help">ARS, si corresponde</span></label>
+            </div>
+            <div class="lap-actions"><button class="lap-button lap-button--secondary" type="button" data-back>Anterior</button><button class="lap-button lap-button--gold" type="button" data-next>Siguiente</button></div>
+          </fieldset>
+
+          <fieldset class="lap-step" data-step="2">
+            <div class="lap-step-header"><small>Paso 3 de 4</small><h3>Estado interior y edificio</h3><p>Estos datos ajustan la comparación: no hace falta que ingreses un valor por metro cuadrado.</p></div>
+            <div class="lap-grid">
+              <label class="lap-field"><span class="lap-label">Estado general <em>*</em></span><select class="lap-control" name="estado" required><option value="">Seleccioná</option><option>A estrenar</option><option>Reciclado</option><option>Muy bueno</option><option>Bueno</option><option>Regular</option><option>A refaccionar</option></select></label>
+              <label class="lap-field"><span class="lap-label">Seguridad</span><input class="lap-control" name="seguridad" placeholder="Ej.: encargado, tótem, vigilancia 24 h"></label>
+              <div class="lap-field lap-field--12"><span class="lap-label">Características</span><div class="lap-check-grid"><label class="lap-check"><input type="checkbox" name="cochera"> Cochera</label><label class="lap-check"><input type="checkbox" name="baulera"> Baulera</label><label class="lap-check"><input type="checkbox" name="ascensor"> Ascensor</label></div></div>
+              <div class="lap-field lap-field--12"><span class="lap-label">Amenities</span><div class="lap-check-grid" id="lap-amenities"><label class="lap-check"><input type="checkbox" value="Pileta"> Pileta</label><label class="lap-check"><input type="checkbox" value="SUM"> SUM</label><label class="lap-check"><input type="checkbox" value="Gimnasio"> Gimnasio</label><label class="lap-check"><input type="checkbox" value="Parrilla"> Parrilla</label><label class="lap-check"><input type="checkbox" value="Laundry"> Laundry</label><label class="lap-check"><input type="checkbox" value="Cowork"> Cowork</label><label class="lap-check"><input type="checkbox" value="Sauna"> Sauna</label><label class="lap-check"><input type="checkbox" value="Jardín"> Jardín</label><label class="lap-check"><input type="checkbox" value="Terraza"> Terraza</label></div></div>
+              <label class="lap-field"><span class="lap-label">Mejoras y estado interior</span><textarea class="lap-control" name="mejoras" maxlength="1500" placeholder="Contanos sobre cocina, baños, pisos, aberturas, instalaciones y reformas recientes."></textarea></label>
+              <label class="lap-field"><span class="lap-label">Descripción adicional</span><textarea class="lap-control" name="descripcion" maxlength="2500" placeholder="Distribución, luminosidad, balcón, vistas, detalles diferenciales o aspectos a corregir."></textarea></label>
+            </div>
+            <div class="lap-actions"><button class="lap-button lap-button--secondary" type="button" data-back>Anterior</button><button class="lap-button lap-button--gold" type="button" data-next>Siguiente</button></div>
+          </fieldset>
+
+          <fieldset class="lap-step" data-step="3">
+            <div class="lap-step-header"><small>Paso 4 de 4</small><h3>¿A quién enviamos el informe?</h3><p>Tu correo es obligatorio porque identifica la solicitud y permitirá enviarte la versión definitiva.</p></div>
+            <div class="lap-grid">
+              <label class="lap-field"><span class="lap-label">Nombre y apellido <em>*</em></span><input class="lap-control" name="nombre" required minlength="3" autocomplete="name"></label>
+              <label class="lap-field"><span class="lap-label">Correo electrónico <em>*</em></span><input class="lap-control" type="email" name="email" required autocomplete="email" placeholder="nombre@correo.com"></label>
+              <label class="lap-field"><span class="lap-label">Teléfono</span><input class="lap-control" type="tel" name="telefono" autocomplete="tel" placeholder="Opcional por ahora"></label>
+              <div class="lap-field lap-field--12"><label class="lap-consent"><input type="checkbox" name="acepta_contacto" required><span>Acepto que LA Propiedades use estos datos para preparar la estimación y contactarme por esta propiedad. <em>*</em></span></label></div>
+            </div>
+            <div class="lap-privacy">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3"/><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M12 14v3"/></svg>
+              <span>La información se guarda en una base privada y no se publica. El informe es orientativo; una tasación definitiva requiere revisión profesional y visita al inmueble.</span>
+            </div>
+            <div class="lap-error" id="lap-form-error" role="alert"></div>
+            <div class="lap-actions"><button class="lap-button lap-button--secondary" type="button" data-back>Anterior</button><button class="lap-button lap-button--gold" type="submit">Analizar propiedad</button></div>
+          </fieldset>
+        </form>
+
+        <div class="lap-loading" id="lap-loading" aria-live="polite"><div class="lap-spinner"></div><h3>Estamos comparando tu propiedad</h3><p id="lap-loading-copy">Validando la ficha y preparando el análisis…</p></div>
+        <div class="lap-result" id="lap-result" aria-live="polite">
+          <h3>Tu estimación está lista</h3><p>Este primer resultado debe revisarse antes de usarlo como precio definitivo.</p>
+          <div class="lap-value-box"><small>Precio orientativo de publicación</small><div class="lap-value" id="lap-result-price">—</div><p id="lap-result-range"></p></div>
+          <div class="lap-result-actions"><a class="lap-button lap-button--gold" id="lap-download" href="#" target="_blank" rel="noopener">Descargar informe PDF</a><button class="lap-button lap-button--secondary" type="button" id="lap-new-quote">Cotizar otra propiedad</button></div>
+          <div class="lap-note" id="lap-result-note"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+  (() => {
+    const root = document.getElementById('laprop-cotizador');
+    const form = document.getElementById('lap-quote-form');
+    const steps = [...form.querySelectorAll('.lap-step')];
+    const progress = [...root.querySelectorAll('.lap-progress-step')];
+    const errorBox = document.getElementById('lap-form-error');
+    const loading = document.getElementById('lap-loading');
+    const result = document.getElementById('lap-result');
+    let currentStep = 0;
+
+    const apiBase = () => {
+      const queryOverride = new URLSearchParams(location.search).get('api');
+      return (queryOverride || root.dataset.apiUrl || '').replace(/\/$/, '');
+    };
+    const numberOrNull = value => value === '' || value == null ? null : Number(value);
+    const usd = value => value == null ? 'A revisar' : `U$S ${new Intl.NumberFormat('es-AR', {maximumFractionDigits:0}).format(value)}`;
+
+    function showStep(index) {
+      currentStep = Math.max(0, Math.min(index, steps.length - 1));
+      steps.forEach((step, idx) => step.classList.toggle('is-active', idx === currentStep));
+      progress.forEach((item, idx) => {
+        item.classList.toggle('is-active', idx === currentStep);
+        item.classList.toggle('is-complete', idx < currentStep);
+      });
+      errorBox.classList.remove('is-visible');
+      root.querySelector('.lap-card').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+
+    function validateStep(index) {
+      const fields = [...steps[index].querySelectorAll('input,select,textarea')].filter(el => el.name !== 'sitio_web');
+      let firstInvalid = null;
+      fields.forEach(field => {
+        const valid = field.checkValidity();
+        field.setAttribute('aria-invalid', valid ? 'false' : 'true');
+        if (!valid && !firstInvalid) firstInvalid = field;
+      });
+      if (index === 1) {
+        const covered = numberOrNull(form.elements.superficie_cubierta.value) || 0;
+        const semi = numberOrNull(form.elements.superficie_semicubierta.value) || 0;
+        const total = numberOrNull(form.elements.superficie_total.value) || 0;
+        if (total < covered + semi) {
+          form.elements.superficie_total.setAttribute('aria-invalid', 'true');
+          firstInvalid = firstInvalid || form.elements.superficie_total;
+          showError('La superficie total no puede ser menor que la cubierta más la semicubierta.');
+        }
+      }
+      if (firstInvalid) {
+        if (!errorBox.classList.contains('is-visible')) showError('Revisá los campos obligatorios antes de continuar.');
+        firstInvalid.focus();
+        return false;
+      }
+      return true;
+    }
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.add('is-visible');
+    }
+
+    function payload() {
+      const el = form.elements;
+      return {
+        contacto: {
+          nombre: el.nombre.value,
+          email: el.email.value,
+          telefono: el.telefono.value || null,
+          acepta_contacto: el.acepta_contacto.checked
+        },
+        inmueble: {
+          direccion: el.direccion.value,
+          barrio: el.barrio.value,
+          ciudad: el.ciudad.value,
+          provincia: el.provincia.value,
+          tipo: el.tipo.value,
+          edificio: el.edificio.value || null,
+          piso: el.piso.value || null,
+          disposicion: el.disposicion.value,
+          orientacion: el.orientacion.value || null,
+          ambientes: Number(el.ambientes.value),
+          dormitorios: Number(el.dormitorios.value),
+          banos: Number(el.banos.value),
+          toilettes: Number(el.toilettes.value || 0),
+          superficie_cubierta: Number(el.superficie_cubierta.value),
+          superficie_semicubierta: Number(el.superficie_semicubierta.value || 0),
+          superficie_total: Number(el.superficie_total.value),
+          superficie_terreno: numberOrNull(el.superficie_terreno.value),
+          antiguedad: numberOrNull(el.antiguedad.value),
+          estado: el.estado.value,
+          cochera: el.cochera.checked,
+          baulera: el.baulera.checked,
+          ascensor: el.ascensor.checked,
+          seguridad: el.seguridad.value || null,
+          expensas: numberOrNull(el.expensas.value),
+          amenities: [...document.querySelectorAll('#lap-amenities input:checked')].map(x => x.value),
+          mejoras: el.mejoras.value || null,
+          descripcion: el.descripcion.value || null
+        },
+        origen: 'web-cotizador',
+        sitio_web: el.sitio_web.value
+      };
+    }
+
+    async function submitQuote(event) {
+      event.preventDefault();
+      if (!validateStep(3)) return;
+      const base = apiBase();
+      if (!base) return showError('Falta configurar la dirección de la API del cotizador.');
+      form.style.display = 'none';
+      root.querySelector('.lap-progress').style.display = 'none';
+      loading.classList.add('is-visible');
+      const loadingCopy = document.getElementById('lap-loading-copy');
+      const messages = ['Buscando publicaciones comparables…','Contrastando superficies, estado y ubicación…','Preparando el informe descargable…'];
+      let idx = 0;
+      const timer = setInterval(() => { loadingCopy.textContent = messages[Math.min(idx++, messages.length - 1)]; }, 1700);
+      try {
+        const response = await fetch(`${base}/api/tasaciones`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload())});
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const detail = Array.isArray(data.detail) ? data.detail.map(x => x.msg).join(' · ') : data.detail;
+          throw new Error(detail || 'No pudimos completar la estimación.');
+        }
+        document.getElementById('lap-result-price').textContent = usd(data.precio_publicacion_usd);
+        document.getElementById('lap-result-range').textContent = `Rango probable de cierre: ${usd(data.cierre_desde_usd)} - ${usd(data.cierre_hasta_usd)}`;
+        document.getElementById('lap-download').href = data.pdf_url;
+        document.getElementById('lap-result-note').textContent = data.modo === 'demo'
+          ? 'Modo demo: el PDF usa datos de prueba del caso NICE Palermo y no realizó búsquedas actuales. Sirve para revisar el formulario, la base y el diseño del informe.'
+          : `Análisis con confianza ${data.nivel_confianza}. LA Propiedades revisará la documentación y el estado presencial antes de recomendar un precio definitivo.`;
+        loading.classList.remove('is-visible');
+        result.classList.add('is-visible');
+      } catch (error) {
+        loading.classList.remove('is-visible');
+        form.style.display = '';
+        root.querySelector('.lap-progress').style.display = '';
+        showStep(3);
+        showError(error.message || 'No pudimos conectar con el cotizador. Probá nuevamente.');
+      } finally { clearInterval(timer); }
+    }
+
+    root.querySelectorAll('[data-next]').forEach(button => button.addEventListener('click', () => { if (validateStep(currentStep)) showStep(currentStep + 1); }));
+    root.querySelectorAll('[data-back]').forEach(button => button.addEventListener('click', () => showStep(currentStep - 1)));
+    form.addEventListener('submit', submitQuote);
+    document.getElementById('lap-new-quote').addEventListener('click', () => {
+      result.classList.remove('is-visible'); form.reset(); form.style.display=''; root.querySelector('.lap-progress').style.display='';
+      form.elements.ciudad.value='CABA'; form.elements.provincia.value='Buenos Aires'; form.elements.toilettes.value='0'; form.elements.superficie_semicubierta.value='0'; showStep(0);
+    });
+    document.getElementById('lap-load-demo').addEventListener('click', () => {
+      const values = {direccion:'Av. Niceto Vega 5120',barrio:'Palermo Soho',ciudad:'CABA',provincia:'Buenos Aires',tipo:'Departamento',edificio:'NICE',piso:'5°',disposicion:'Contrafrente',orientacion:'',ambientes:2,dormitorios:1,banos:1,toilettes:1,superficie_cubierta:46,superficie_semicubierta:3,superficie_total:49,antiguedad:0,estado:'A estrenar',seguridad:'Portero visor',mejoras:'Porcelanato, cocina integrada equipada y aire acondicionado.',descripcion:'Unidad de dos ambientes con toilette de recepción, dormitorio en suite y balcón al contrafrente.',nombre:'Propietario de prueba',email:'prueba@example.com'};
+      Object.entries(values).forEach(([key,value]) => { if (form.elements[key]) form.elements[key].value=value; });
+      ['ascensor'].forEach(key => form.elements[key].checked=true);
+      ['Pileta','SUM','Gimnasio','Parrilla','Sauna','Cowork'].forEach(value => { const check=[...document.querySelectorAll('#lap-amenities input')].find(x=>x.value===value); if(check) check.checked=true; });
+      form.elements.acepta_contacto.checked=true; showStep(0);
+    });
+  })();
+  </script>
+</main>
+</body>
+</html>
+
