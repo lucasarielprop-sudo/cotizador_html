@@ -131,7 +131,132 @@ function updateCalculatedSurface(){const t=numberOrNull(form.elements.superficie
 function validateStep(i){const fields=[...steps[i].querySelectorAll('input,select')].filter(x=>x.name!=='sitio_web'&&!x.disabled);let first=null;fields.forEach(f=>{const ok=f.checkValidity();f.setAttribute('aria-invalid',ok?'false':'true');if(!ok&&!first)first=f});if(i===1){const c=numberOrNull(form.elements.superficie_cubierta.value)||0,t=numberOrNull(form.elements.superficie_total.value)||0;if(t<c){form.elements.superficie_total.setAttribute('aria-invalid','true');first=first||form.elements.superficie_total;showError('La superficie total no puede ser menor que la superficie cubierta.')}}if(first){if(!errorBox.classList.contains('is-visible'))showError('Revisá los campos obligatorios antes de continuar.');first.focus();return false}return true}
 async function nextStep(){if(!validateStep(currentStep))return;if(currentStep===0&&!locationData.normalized){await suggestAddress();setLocationStatus('is-warn','Elegí una dirección de la lista.','También podés continuar con la dirección tal como la ingresaste.');return}showStep(currentStep+1)}
 function payload(){const e=form.elements;return{contacto:{nombre:e.nombre.value,email:e.email.value,telefono:e.telefono.value||null},inmueble:{direccion:locationData.normalized||`${e.calle.value.trim()} ${e.altura.value.trim()}`,ciudad:e.ciudad.value,provincia:e.provincia.disabled?'N/A':e.provincia.value,tipo:e.tipo.value,piso:e.piso.value,orientacion:e.orientacion.value,barrio:locationData.barrio||null,ambientes:Number(e.ambientes.value),dormitorios:Number(e.dormitorios.value),banos:Number(e.banos.value),toilettes:Number(e.toilettes.value||0),superficie_cubierta:Number(e.superficie_cubierta.value),superficie_semicubierta:Number(e.superficie_semicubierta.value||0),superficie_total:Number(e.superficie_total.value),antiguedad:Number(e.antiguedad.value),estado:e.estado.value,cochera:e.cochera.checked,baulera:e.baulera.checked,ascensor:e.ascensor.checked,seguridad:e.seguridad.value||null,expensas:numberOrNull(e.expensas.value),amenities:[...document.querySelectorAll('#lap-amenities input:checked')].map(x=>x.value)},origen:'web-cotizador',sitio_web:e.sitio_web.value}}
-async function submitQuote(ev){ev.preventDefault();if(!validateStep(3))return;const base=apiBase();if(!base)return showError('Falta configurar la dirección de la API del cotizador.');form.style.display='none';root.querySelector('.lap-progress').style.display='none';loading.classList.add('is-visible');window.scrollTo({top:0,left:0,behavior:'smooth'});const analysisSteps=[...document.querySelectorAll('#lap-analysis-steps .lap-analysis-step')];let currentAnalysisStep=0;analysisSteps.forEach((s,i)=>{s.classList.toggle('is-active',i===0);s.classList.remove('is-done');s.querySelector('.lap-analysis-step-icon').textContent='•'});const advanceAnalysis=()=>{if(currentAnalysisStep<analysisSteps.length){analysisSteps[currentAnalysisStep].classList.remove('is-active');analysisSteps[currentAnalysisStep].classList.add('is-done');analysisSteps[currentAnalysisStep].querySelector('.lap-analysis-step-icon').textContent='✓';currentAnalysisStep++;if(currentAnalysisStep<analysisSteps.length)analysisSteps[currentAnalysisStep].classList.add('is-active')}};const timer=null;try{const r=await fetch(`${base}/api/tasaciones`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload())});const data=await r.json().catch(()=>({}));if(!r.ok){const detail=Array.isArray(data.detail)?data.detail.map(x=>x.msg).join(' · '):data.detail;throw new Error(detail||'No pudimos completar la estimación.')}document.getElementById('lap-result-price').textContent=usd(data.precio_publicacion_usd);document.getElementById('lap-result-range').textContent=`Rango probable de cierre: ${usd(data.cierre_desde_usd)} - ${usd(data.cierre_hasta_usd)}`;document.getElementById('lap-download').href=data.pdf_url;document.getElementById('lap-result-note').textContent=data.modo==='demo'?'Modo demo: este resultado permite revisar el circuito, el formulario, la base y el PDF. Todavía no realiza búsquedas actuales de mercado.':'LA Propiedades revisará la documentación y el estado presencial antes de recomendar un precio definitivo.';while(currentAnalysisStep<analysisSteps.length)advanceAnalysis();loading.classList.remove('is-visible');result.classList.add('is-visible');window.scrollTo({top:0,left:0,behavior:'smooth'})}catch(e){loading.classList.remove('is-visible');form.style.display='';root.querySelector('.lap-progress').style.display='';showStep(3);showError(e.message||'No pudimos conectar con el cotizador. Probá nuevamente.')}finally{}}
+async function submitQuote(ev){
+  ev.preventDefault();
+  if(!validateStep(3))return;
+
+  const base=apiBase();
+  if(!base)return showError('Falta configurar la dirección de la API del cotizador.');
+
+  form.style.display='none';
+  root.querySelector('.lap-progress').style.display='none';
+  loading.classList.add('is-visible');
+  window.scrollTo({top:0,left:0,behavior:'smooth'});
+
+  const analysisSteps=[...document.querySelectorAll('#lap-analysis-steps .lap-analysis-step')];
+
+  const paintAnalysisStage=stage=>{
+    const activeIndex={
+      validacion:0,
+      busqueda:1,
+      analisis:2,
+      pdf:3,
+      completa:4
+    }[stage];
+
+    if(activeIndex===undefined)return;
+
+    analysisSteps.forEach((step,index)=>{
+      const icon=step.querySelector('.lap-analysis-step-icon');
+      const done=index<activeIndex || activeIndex===analysisSteps.length;
+      const active=index===activeIndex && activeIndex<analysisSteps.length;
+
+      step.classList.toggle('is-done',done);
+      step.classList.toggle('is-active',active);
+      icon.textContent=done?'✓':'•';
+    });
+  };
+
+  const pdfUrl=value=>{
+    if(!value)return '#';
+    if(/^https?:\/\//i.test(value))return value;
+    return `${base}${value.startsWith('/')?'':'/'}${value}`;
+  };
+
+  paintAnalysisStage('validacion');
+
+  try{
+    const r=await fetch(`${base}/api/tasaciones`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload())
+    });
+
+    const created=await r.json().catch(()=>({}));
+
+    if(!r.ok){
+      const detail=Array.isArray(created.detail)
+        ?created.detail.map(x=>x.msg).join(' · ')
+        :created.detail;
+      throw new Error(detail||'No pudimos iniciar la estimación.');
+    }
+
+    if(!created.id)throw new Error('La API no devolvió el identificador de la cotización.');
+
+    // El POST ya terminó la validación real y Storage dejó la tasación
+    // en la etapa "busqueda".
+    paintAnalysisStage('busqueda');
+
+    let finalData=null;
+
+    while(!finalData){
+      await new Promise(resolve=>setTimeout(resolve,1500));
+
+      const statusResponse=await fetch(
+        `${base}/api/tasaciones/${encodeURIComponent(created.id)}`,
+        {headers:{Accept:'application/json'},cache:'no-store'}
+      );
+
+      const statusData=await statusResponse.json().catch(()=>({}));
+
+      if(!statusResponse.ok){
+        throw new Error(statusData.detail||'No pudimos consultar el avance de la estimación.');
+      }
+
+      if(statusData.estado==='error' || statusData.etapa_actual==='error'){
+        throw new Error(
+          statusData.detalle||
+          'No fue posible completar el análisis. La solicitud quedó guardada para revisión.'
+        );
+      }
+
+      if(statusData.etapa_actual){
+        paintAnalysisStage(statusData.etapa_actual);
+      }
+
+      if(statusData.etapa_actual==='completa'){
+        finalData=statusData;
+      }
+    }
+
+    paintAnalysisStage('completa');
+
+    document.getElementById('lap-result-price').textContent=
+      usd(finalData.precio_publicacion_usd);
+
+    document.getElementById('lap-result-range').textContent=
+      `Rango probable de cierre: ${usd(finalData.cierre_desde_usd)} - ${usd(finalData.cierre_hasta_usd)}`;
+
+    document.getElementById('lap-download').href=
+      pdfUrl(finalData.pdf_url||created.pdf_url);
+
+    document.getElementById('lap-result-note').textContent=
+      finalData.modo==='demo'
+        ?'Modo demo: este resultado permite revisar el circuito, el formulario, la base y el PDF. Todavía no realiza búsquedas actuales de mercado.'
+        :'LA Propiedades revisará la documentación y el estado presencial antes de recomendar un precio definitivo.';
+
+    loading.classList.remove('is-visible');
+    result.classList.add('is-visible');
+    window.scrollTo({top:0,left:0,behavior:'smooth'});
+
+  }catch(e){
+    loading.classList.remove('is-visible');
+    form.style.display='';
+    root.querySelector('.lap-progress').style.display='';
+    showStep(3);
+    showError(e.message||'No pudimos conectar con el cotizador. Probá nuevamente.');
+  }
+}
 root.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',nextStep));root.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>showStep(currentStep-1)));form.addEventListener('submit',submitQuote);form.elements.ubicacion_unidad.addEventListener('change',applyOrientation);form.elements.superficie_total.addEventListener('input',updateCalculatedSurface);form.elements.superficie_cubierta.addEventListener('input',updateCalculatedSurface);
 form.elements.calle.addEventListener('input',()=>{resetLocation();hide(addressBox);clearTimeout(streetTimer);streetTimer=setTimeout(suggestStreet,300)});form.elements.calle.addEventListener('blur',()=>setTimeout(()=>hide(streetBox),180));
 form.elements.altura.addEventListener('input',()=>{resetLocation();clearTimeout(addressTimer);if(form.elements.altura.value.trim())addressTimer=setTimeout(suggestAddress,350)});form.elements.altura.addEventListener('blur',()=>setTimeout(()=>hide(addressBox),220));
