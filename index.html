@@ -57,9 +57,11 @@
           <label class="lap-field lap-field--3"><span class="lap-label">Dormitorios <em>*</em></span><input class="lap-control" type="number" name="dormitorios" min="0" max="20" required></label>
           <label class="lap-field lap-field--3"><span class="lap-label">Baños <em>*</em></span><input class="lap-control" type="number" name="banos" min="0" max="20" required></label>
           <label class="lap-field lap-field--3"><span class="lap-label">Toilettes</span><input class="lap-control" type="number" name="toilettes" min="0" max="10" value="0"></label>
-          <label class="lap-field lap-field--4"><span class="lap-label">Superficie total <em>*</em></span><input class="lap-control" type="number" name="superficie_total" min="1" step="0.1" required><span class="lap-help">En m²</span></label>
-          <label class="lap-field lap-field--4"><span class="lap-label">Superficie cubierta <em>*</em></span><input class="lap-control" type="number" name="superficie_cubierta" min="0" step="0.1" required><span class="lap-help">En m²</span></label>
-          <label class="lap-field lap-field--4"><span class="lap-label">Semicubierta / descubierta</span><input class="lap-control" type="number" name="superficie_semicubierta" min="0" step="0.1" value="0" readonly tabindex="-1"><span class="lap-help">Se calcula automáticamente: total menos cubierta</span></label>
+          <label class="lap-field lap-field--3"><span class="lap-label">Superficie cubierta <em>*</em></span><input class="lap-control" type="number" name="superficie_cubierta" min="0.1" step="0.1" required><span class="lap-help">En m² · computa al 100%</span></label>
+          <label class="lap-field lap-field--3"><span class="lap-label">Superficie semicubierta</span><input class="lap-control" type="number" name="superficie_semicubierta" min="0" step="0.1" value="0"><span class="lap-help">En m² · ej. galería o balcón semicubierto</span></label>
+          <label class="lap-field lap-field--3"><span class="lap-label">Superficie descubierta</span><input class="lap-control" type="number" name="superficie_descubierta" min="0" step="0.1" value="0"><span class="lap-help">En m² · balcón, patio o terraza</span></label>
+          <label class="lap-field lap-field--3"><span class="lap-label">Superficie total</span><input class="lap-control" type="number" name="superficie_total" min="0.1" step="0.1" readonly tabindex="-1"><span class="lap-help">Se calcula automáticamente</span></label>
+          <label class="lap-field lap-field--6" id="lap-uncovered-type-field" style="display:none"><span class="lap-label">Tipo de superficie descubierta <em>*</em></span><select class="lap-control" name="tipo_superficie_descubierta"><option value="">Seleccioná</option><option>Balcón descubierto</option><option>Balcón terraza</option><option>Patio/Terraza</option><option value="Otra">Otra / a revisar</option></select><span class="lap-help">Permite ponderar los m² sin tratarlos como superficie cubierta.</span></label>
           <label class="lap-field lap-field--4"><span class="lap-label">Antigüedad <em>*</em></span><input class="lap-control" type="number" name="antiguedad" min="0" max="300" required><span class="lap-help">Usá 0 si es a estrenar</span></label>
           <label class="lap-field lap-field--4"><span class="lap-label">Expensas mensuales</span><input class="lap-control" type="number" name="expensas" min="0" step="1"><span class="lap-help">ARS, si corresponde</span></label>
         </div><div class="lap-actions"><button class="lap-button lap-button--secondary" type="button" data-back>Anterior</button><button class="lap-button lap-button--gold" type="button" data-next>Siguiente</button></div>
@@ -70,7 +72,7 @@
           <label class="lap-field"><span class="lap-label">Estado general <em>*</em></span><select class="lap-control" name="estado" required><option value="">Seleccioná</option><option>A estrenar</option><option>Reciclado</option><option>Muy bueno</option><option>Bueno</option><option>Regular</option><option>A refaccionar</option></select></label>
           <label class="lap-field"><span class="lap-label">Seguridad</span><input class="lap-control" name="seguridad" placeholder="Ej.: encargado, tótem, vigilancia 24 h"></label>
           <div class="lap-field lap-field--12"><span class="lap-label">Características</span><div class="lap-check-grid"><label class="lap-check"><input type="checkbox" name="cochera"> Cochera</label><label class="lap-check"><input type="checkbox" name="baulera"> Baulera</label><label class="lap-check"><input type="checkbox" name="ascensor"> Ascensor</label></div></div>
-          <div class="lap-field lap-field--12"><span class="lap-label">Amenities</span><div class="lap-check-grid" id="lap-amenities"><label class="lap-check"><input type="checkbox" value="Pileta"> Pileta</label><label class="lap-check"><input type="checkbox" value="SUM"> SUM</label><label class="lap-check"><input type="checkbox" value="Gimnasio"> Gimnasio</label><label class="lap-check"><input type="checkbox" value="Parrilla"> Parrilla</label><label class="lap-check"><input type="checkbox" value="Laundry"> Laundry</label><label class="lap-check"><input type="checkbox" value="Cowork"> Cowork</label><label class="lap-check"><input type="checkbox" value="Sauna"> Sauna</label><label class="lap-check"><input type="checkbox" value="Jardín"> Jardín</label><label class="lap-check"><input type="checkbox" value="Terraza"> Terraza</label></div></div>
+          <div class="lap-field lap-field--12"><span class="lap-label">Amenities</span><div class="lap-check-grid" id="lap-amenities"><label class="lap-check"><input type="checkbox" value="Pileta"> Pileta</label><label class="lap-check"><input type="checkbox" value="SUM"> SUM</label><label class="lap-check"><input type="checkbox" value="Gimnasio"> Gimnasio</label><label class="lap-check"><input type="checkbox" value="Parrilla"> Parrilla</label><label class="lap-check"><input type="checkbox" value="Laundry"> Laundry</label><label class="lap-check"><input type="checkbox" value="Cowork"> Cowork</label><label class="lap-check"><input type="checkbox" value="Sauna"> Sauna</label><label class="lap-check"><input type="checkbox" value="Jardín"> Jardín</label><label class="lap-check"><input type="checkbox" value="Terraza"> Terraza</label><label class="lap-check"><input type="checkbox" value="Vigilador"> Vigilador</label><label class="lap-check"><input type="checkbox" value="Tótem de vigilancia remota"> Tótem de vigilancia remota</label></div></div>
         </div><div class="lap-actions"><button class="lap-button lap-button--secondary" type="button" data-back>Anterior</button><button class="lap-button lap-button--gold" type="button" data-next>Siguiente</button></div>
       </fieldset>
       <fieldset class="lap-step" data-step="3">
@@ -95,7 +97,7 @@
 <div class="lap-analysis-step" data-analysis-step="2"><span class="lap-analysis-step-icon">•</span><span class="lap-analysis-step-copy"><strong>Análisis, descarte, cálculo y redacción</strong><span>Segunda etapa de IA: evaluación de evidencia y elaboración de la estimación.</span></span></div>
 <div class="lap-analysis-step" data-analysis-step="3"><span class="lap-analysis-step-icon">•</span><span class="lap-analysis-step-copy"><strong>Generación del PDF</strong><span>Armamos el informe final.</span></span></div>
 </div></div></div>
-    <div class="lap-result" id="lap-result"><h3>Recibimos tu solicitud</h3><div class="lap-note" id="lap-result-note"></div><div class="lap-result-actions"><button class="lap-button lap-button--secondary" type="button" id="lap-open-public-pdf">Ver PDF cliente</button><button class="lap-button lap-button--secondary" type="button" id="lap-open-internal-pdf">Ver PDF interno</button><button class="lap-button lap-button--gold" type="button" id="lap-new-quote">Cotizar otra propiedad</button></div></div>
+    <div class="lap-result" id="lap-result"><h3>Recibimos tu solicitud</h3><div class="lap-note" id="lap-result-note"></div><div class="lap-result-actions"><button class="lap-button lap-button--secondary" type="button" id="lap-open-public-pdf">Ver PDF cliente</button><button class="lap-button lap-button--secondary" type="button" id="lap-download-public-pdf">Descargar PDF cliente</button><button class="lap-button lap-button--secondary" type="button" id="lap-open-internal-pdf">Ver PDF interno</button><button class="lap-button lap-button--secondary" type="button" id="lap-download-internal-pdf">Descargar PDF interno</button><button class="lap-button lap-button--gold" type="button" id="lap-new-quote">Cotizar otra propiedad</button></div></div>
   </div></section>
 </div>
 <script>
@@ -141,10 +143,10 @@ function photoLabels(){const e=form.elements,out=['Cocina','Living / Comedor'];c
 function updatePhotoCounter(){photoCounter.textContent=`${selectedPhotos.size} de 14 fotos seleccionadas`}
 function renderPhotoSlots(){const labels=photoLabels();for(const key of [...selectedPhotos.keys()])if(!labels.includes(key)&&key!=='Otro')selectedPhotos.delete(key);photoGrid.innerHTML='';labels.forEach((ambiente,index)=>{const file=selectedPhotos.get(ambiente),card=document.createElement('label');card.className='lap-photo-card'+(file?' has-file':'');const preview=file?`<img class="lap-photo-preview" alt="Vista previa de ${ambiente.replace(/"/g,'&quot;')}" src="${URL.createObjectURL(file)}">`:'';card.innerHTML=`<strong>${ambiente}</strong><small>Una sola foto, opcional.</small>${preview}<input type="file" accept="image/*,.heic,.heif" data-photo-ambiente="${ambiente.replace(/"/g,'&quot;')}">${file?'<span class="lap-photo-selected">✓ Foto seleccionada</span>':''}<span class="lap-photo-file">${file?.name||'Sin foto seleccionada'}</span>`;const input=card.querySelector('input');input.addEventListener('change',()=>{const next=input.files&&input.files[0];if(next)selectedPhotos.set(ambiente,next);else selectedPhotos.delete(ambiente);renderPhotoSlots();updatePhotoCounter()});photoGrid.appendChild(card)});updatePhotoCounter()}
 async function uploadPhotos(base,quoteId){let order=0;for(const [ambiente,file] of selectedPhotos.entries()){const fd=new FormData();fd.append('foto',file,file.name);fd.append('ambiente',ambiente);fd.append('orden',String(order++));const r=await fetch(`${base}/api/tasaciones/${encodeURIComponent(quoteId)}/fotos`,{method:'POST',body:fd});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.detail||`No pudimos subir la foto de ${ambiente}.`)}}
-function updateCalculatedSurface(){const t=numberOrNull(form.elements.superficie_total.value)||0,c=numberOrNull(form.elements.superficie_cubierta.value)||0;const other=Math.max(0,t-c);form.elements.superficie_semicubierta.value=(Math.round(other*10)/10).toString()}
-function validateStep(i){const fields=[...steps[i].querySelectorAll('input,select')].filter(x=>x.name!=='sitio_web'&&!x.disabled);let first=null;fields.forEach(f=>{const ok=f.checkValidity();f.setAttribute('aria-invalid',ok?'false':'true');if(!ok&&!first)first=f});if(i===1){const c=numberOrNull(form.elements.superficie_cubierta.value)||0,t=numberOrNull(form.elements.superficie_total.value)||0;if(t<c){form.elements.superficie_total.setAttribute('aria-invalid','true');first=first||form.elements.superficie_total;showError('La superficie total no puede ser menor que la superficie cubierta.')}}if(first){if(!errorBox.classList.contains('is-visible'))showError('Revisá los campos obligatorios antes de continuar.');first.focus();return false}return true}
+function updateCalculatedSurface(){const c=numberOrNull(form.elements.superficie_cubierta.value)||0,s=numberOrNull(form.elements.superficie_semicubierta.value)||0,d=numberOrNull(form.elements.superficie_descubierta.value)||0;const total=Math.max(0,c+s+d);form.elements.superficie_total.value=total?(Math.round(total*10)/10).toString():'';const typeField=document.getElementById('lap-uncovered-type-field'),typeSelect=form.elements.tipo_superficie_descubierta;const hasOpen=d>0;typeField.style.display=hasOpen?'':'none';typeSelect.required=hasOpen;typeSelect.disabled=!hasOpen;if(!hasOpen)typeSelect.value=''}
+function validateStep(i){updateCalculatedSurface();const fields=[...steps[i].querySelectorAll('input,select')].filter(x=>x.name!=='sitio_web'&&!x.disabled);let first=null;fields.forEach(f=>{const ok=f.checkValidity();f.setAttribute('aria-invalid',ok?'false':'true');if(!ok&&!first)first=f});if(i===1){const c=numberOrNull(form.elements.superficie_cubierta.value)||0,s=numberOrNull(form.elements.superficie_semicubierta.value)||0,d=numberOrNull(form.elements.superficie_descubierta.value)||0,t=numberOrNull(form.elements.superficie_total.value)||0;if(c<=0||t<=0||Math.abs(t-(c+s+d))>0.11){first=first||form.elements.superficie_cubierta;showError('Revisá las superficies: el total debe surgir de cubierta + semicubierta + descubierta.')}}if(first){if(!errorBox.classList.contains('is-visible'))showError('Revisá los campos obligatorios antes de continuar.');first.focus();return false}return true}
 async function nextStep(){if(!validateStep(currentStep))return;if(currentStep===0&&!locationData.normalized){await suggestAddress();setLocationStatus('is-warn','Elegí una dirección de la lista.','También podés continuar con la dirección tal como la ingresaste.');return}if(currentStep===2)renderPhotoSlots();showStep(currentStep+1)}
-function payload(){const e=form.elements;return{contacto:{nombre:e.nombre.value,email:e.email.value,telefono:e.telefono.value||null},inmueble:{direccion:locationData.normalized||`${e.calle.value.trim()} ${e.altura.value.trim()}`,ciudad:e.ciudad.value,provincia:e.provincia.disabled?'N/A':e.provincia.value,tipo:e.tipo.value,piso:e.piso.value,orientacion:e.orientacion.value,barrio:locationData.barrio||null,ambientes:Number(e.ambientes.value),dormitorios:Number(e.dormitorios.value),banos:Number(e.banos.value),toilettes:Number(e.toilettes.value||0),superficie_cubierta:Number(e.superficie_cubierta.value),superficie_semicubierta:Number(e.superficie_semicubierta.value||0),superficie_total:Number(e.superficie_total.value),antiguedad:Number(e.antiguedad.value),estado:e.estado.value,cochera:e.cochera.checked,baulera:e.baulera.checked,ascensor:e.ascensor.checked,seguridad:e.seguridad.value||null,expensas:numberOrNull(e.expensas.value),amenities:[...document.querySelectorAll('#lap-amenities input:checked')].map(x=>x.value)},origen:'web-cotizador',sitio_web:e.sitio_web.value}}
+function payload(){const e=form.elements;return{contacto:{nombre:e.nombre.value,email:e.email.value,telefono:e.telefono.value||null},inmueble:{direccion:locationData.normalized||`${e.calle.value.trim()} ${e.altura.value.trim()}`,ciudad:e.ciudad.value,provincia:e.provincia.disabled?'N/A':e.provincia.value,tipo:e.tipo.value,piso:e.piso.value,orientacion:e.orientacion.value,barrio:locationData.barrio||null,ambientes:Number(e.ambientes.value),dormitorios:Number(e.dormitorios.value),banos:Number(e.banos.value),toilettes:Number(e.toilettes.value||0),superficie_cubierta:Number(e.superficie_cubierta.value),superficie_semicubierta:Number(e.superficie_semicubierta.value||0),superficie_descubierta:Number(e.superficie_descubierta.value||0),tipo_superficie_descubierta:e.tipo_superficie_descubierta&&!e.tipo_superficie_descubierta.disabled?(e.tipo_superficie_descubierta.value||null):null,superficie_total:Number(e.superficie_total.value),antiguedad:Number(e.antiguedad.value),estado:e.estado.value,cochera:e.cochera.checked,baulera:e.baulera.checked,ascensor:e.ascensor.checked,seguridad:e.seguridad.value||null,expensas:numberOrNull(e.expensas.value),amenities:[...document.querySelectorAll('#lap-amenities input:checked')].map(x=>x.value)},origen:'web-cotizador',sitio_web:e.sitio_web.value}}
 async function submitQuote(ev){
   ev.preventDefault();
   if(!validateStep(4))return;
@@ -262,7 +264,7 @@ async function submitQuote(ev){
     showError(msg);
   }
 }
-root.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',nextStep));root.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>showStep(currentStep-1)));form.addEventListener('submit',submitQuote);form.elements.ubicacion_unidad.addEventListener('change',applyOrientation);form.elements.superficie_total.addEventListener('input',updateCalculatedSurface);form.elements.superficie_cubierta.addEventListener('input',updateCalculatedSurface);
+root.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',nextStep));root.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>showStep(currentStep-1)));form.addEventListener('submit',submitQuote);form.elements.ubicacion_unidad.addEventListener('change',applyOrientation);form.elements.superficie_cubierta.addEventListener('input',updateCalculatedSurface);form.elements.superficie_semicubierta.addEventListener('input',updateCalculatedSurface);form.elements.superficie_descubierta.addEventListener('input',updateCalculatedSurface);
 form.elements.calle.addEventListener('input',()=>{
   resetLocation();
   hide(addressBox);
@@ -300,52 +302,66 @@ document.addEventListener('pointerdown',e=>{
 
 form.elements.ciudad.addEventListener('change',()=>{resetLocation();if(isCaba())setCabaMode(true);else setCabaMode(false)});
 
-async function openReviewPdf(kind){
-  if(!lastQuoteId){
-    alert('No hay una tasación terminada para revisar.');
-    return;
-  }
-
+async function getInternalToken(){
   let token=sessionStorage.getItem('laprop_internal_token')||'';
   if(!token){
     token=prompt('Ingresá el token interno de LA Propiedades para revisar los PDFs:')||'';
-    if(!token)return;
+    if(!token)return null;
     sessionStorage.setItem('laprop_internal_token',token);
   }
+  return token;
+}
 
+async function fetchReviewPdf(kind){
+  if(!lastQuoteId)throw new Error('No hay una tasación terminada para revisar.');
+  let token=await getInternalToken();
+  if(!token)return null;
   const suffix=kind==='interno'?'/pdf-interno':'/pdf';
-  let response=await fetch(
-    `${apiBase()}/api/tasaciones/${encodeURIComponent(lastQuoteId)}${suffix}`,
-    {headers:{'X-Internal-Token':token}}
-  );
-
+  let response=await fetch(`${apiBase()}/api/tasaciones/${encodeURIComponent(lastQuoteId)}${suffix}`,{headers:{'X-Internal-Token':token}});
   if(response.status===401){
     sessionStorage.removeItem('laprop_internal_token');
     const retry=prompt('El token no fue aceptado. Ingresalo nuevamente:')||'';
-    if(!retry)return;
+    if(!retry)return null;
     sessionStorage.setItem('laprop_internal_token',retry);
-    response=await fetch(
-      `${apiBase()}/api/tasaciones/${encodeURIComponent(lastQuoteId)}${suffix}`,
-      {headers:{'X-Internal-Token':retry}}
-    );
+    response=await fetch(`${apiBase()}/api/tasaciones/${encodeURIComponent(lastQuoteId)}${suffix}`,{headers:{'X-Internal-Token':retry}});
   }
-
   if(!response.ok){
     const data=await response.json().catch(()=>({}));
-    alert(data.detail||'No pudimos abrir el PDF.');
-    return;
+    throw new Error(data.detail||'No pudimos obtener el PDF.');
   }
+  return response.blob();
+}
 
-  const blob=await response.blob();
-  const url=URL.createObjectURL(blob);
-  window.open(url,'_blank','noopener');
-  setTimeout(()=>URL.revokeObjectURL(url),60000);
+async function openReviewPdf(kind){
+  try{
+    const blob=await fetchReviewPdf(kind);
+    if(!blob)return;
+    const url=URL.createObjectURL(blob);
+    window.open(url,'_blank','noopener');
+    setTimeout(()=>URL.revokeObjectURL(url),300000);
+  }catch(e){alert(e.message||'No pudimos abrir el PDF.')}
+}
+
+async function downloadReviewPdf(kind){
+  try{
+    const blob=await fetchReviewPdf(kind);
+    if(!blob)return;
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;
+    a.download=kind==='interno'?`tasacion-interna-${lastQuoteId.slice(0,8)}.pdf`:`tasacion-${lastQuoteId.slice(0,8)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }catch(e){alert(e.message||'No pudimos descargar el PDF.')}
 }
 
 document.getElementById('lap-open-public-pdf').addEventListener('click',()=>openReviewPdf('publico'));
+document.getElementById('lap-download-public-pdf').addEventListener('click',()=>downloadReviewPdf('publico'));
 document.getElementById('lap-open-internal-pdf').addEventListener('click',()=>openReviewPdf('interno'));
+document.getElementById('lap-download-internal-pdf').addEventListener('click',()=>downloadReviewPdf('interno'));
 
-document.getElementById('lap-new-quote').addEventListener('click',()=>{lastQuoteId=null;result.classList.remove('is-visible');selectedPhotos.clear();photoGrid.innerHTML='';updatePhotoCounter();form.reset();form.style.display='';root.querySelector('.lap-progress').style.display='';form.elements.ciudad.value='CABA';setCabaMode(true);form.elements.toilettes.value='0';form.elements.superficie_semicubierta.value='0';updateCalculatedSurface();resetLocation();showStep(0)});
+document.getElementById('lap-new-quote').addEventListener('click',()=>{lastQuoteId=null;result.classList.remove('is-visible');selectedPhotos.clear();photoGrid.innerHTML='';updatePhotoCounter();form.reset();form.style.display='';root.querySelector('.lap-progress').style.display='';form.elements.ciudad.value='CABA';setCabaMode(true);form.elements.toilettes.value='0';form.elements.superficie_semicubierta.value='0';form.elements.superficie_descubierta.value='0';form.elements.tipo_superficie_descubierta.value='';updateCalculatedSurface();resetLocation();showStep(0)});
 setCabaMode(true);
 })();
 </script>
