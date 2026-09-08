@@ -263,8 +263,41 @@ async function submitQuote(ev){
   }
 }
 root.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',nextStep));root.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>showStep(currentStep-1)));form.addEventListener('submit',submitQuote);form.elements.ubicacion_unidad.addEventListener('change',applyOrientation);form.elements.superficie_total.addEventListener('input',updateCalculatedSurface);form.elements.superficie_cubierta.addEventListener('input',updateCalculatedSurface);
-form.elements.calle.addEventListener('input',()=>{resetLocation();hide(addressBox);clearTimeout(streetTimer);streetTimer=setTimeout(suggestStreet,300)});form.elements.calle.addEventListener('blur',()=>setTimeout(()=>hide(streetBox),180));
-form.elements.altura.addEventListener('input',()=>{resetLocation();clearTimeout(addressTimer);if(form.elements.altura.value.trim())addressTimer=setTimeout(suggestAddress,350)});form.elements.altura.addEventListener('blur',()=>setTimeout(()=>hide(addressBox),220));
+form.elements.calle.addEventListener('input',()=>{
+  resetLocation();
+  hide(addressBox);
+  clearTimeout(streetTimer);
+  streetTimer=setTimeout(suggestStreet,300);
+});
+form.elements.calle.addEventListener('blur',()=>{
+  clearTimeout(streetTimer);
+  if(form.elements.calle.value.trim().length>=5) suggestStreet();
+});
+
+form.elements.altura.addEventListener('input',()=>{
+  resetLocation();
+  clearTimeout(addressTimer);
+  if(form.elements.altura.value.trim()) addressTimer=setTimeout(suggestAddress,350);
+});
+form.elements.altura.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    clearTimeout(addressTimer);
+    suggestAddress();
+  }
+});
+form.elements.altura.addEventListener('blur',()=>{
+  clearTimeout(addressTimer);
+  if(form.elements.altura.value.trim()) suggestAddress();
+});
+
+document.addEventListener('pointerdown',e=>{
+  const streetWrap=form.elements.calle.closest('.lap-autocomplete-wrap');
+  const addressWrap=form.elements.altura.closest('.lap-autocomplete-wrap');
+  if(streetWrap && !streetWrap.contains(e.target)) hide(streetBox);
+  if(addressWrap && !addressWrap.contains(e.target) && !addressBox.contains(e.target)) hide(addressBox);
+});
+
 form.elements.ciudad.addEventListener('change',()=>{resetLocation();if(isCaba())setCabaMode(true);else setCabaMode(false)});
 
 async function openReviewPdf(kind){
@@ -312,7 +345,7 @@ async function openReviewPdf(kind){
 document.getElementById('lap-open-public-pdf').addEventListener('click',()=>openReviewPdf('publico'));
 document.getElementById('lap-open-internal-pdf').addEventListener('click',()=>openReviewPdf('interno'));
 
-document.getElementById('lap-new-quote').addEventListener('click',()=>{lastQuoteId=null;result.classList.remove('is-visible');selectedPhotos.clear();photoGrid.innerHTML='';updatePhotoCounter();form.reset();form.style.display='';root.querySelector('.lap-progress').style.display='';form.elements.ciudad.value='CABA';setCabaMode(true);form.elements.toilettes.value='0';form.elements.superficie_semicubierta.value='0';updateCalculatedSurface();resetLocation();showStep(0)});form.elements.ascensor.checked=true;setCabaMode(true);updateCalculatedSurface();resetLocation();showStep(0);suggestAddress()});
+document.getElementById('lap-new-quote').addEventListener('click',()=>{lastQuoteId=null;result.classList.remove('is-visible');selectedPhotos.clear();photoGrid.innerHTML='';updatePhotoCounter();form.reset();form.style.display='';root.querySelector('.lap-progress').style.display='';form.elements.ciudad.value='CABA';setCabaMode(true);form.elements.toilettes.value='0';form.elements.superficie_semicubierta.value='0';updateCalculatedSurface();resetLocation();showStep(0)});
 setCabaMode(true);
 })();
 </script>
