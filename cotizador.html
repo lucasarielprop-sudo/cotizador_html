@@ -247,7 +247,7 @@ async function submitQuote(ev){
     paintAnalysisStage('completa');
 
     lastQuoteId=created.id;
-    const emailStatus=String(done.email_envio||'').toLowerCase();
+    const emailStatus=String(finalData.email_envio||'').toLowerCase();
     document.getElementById('lap-result-note').textContent=
       emailStatus==='enviado'
         ? 'El informe fue enviado a su correo electrónico desde info@lapropiedades.com.ar. Si no lo encuentra en la Bandeja de Entrada, revise la carpeta de Correo No Deseado o Spam.'
