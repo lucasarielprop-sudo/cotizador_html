@@ -168,6 +168,7 @@
                     <th>Condición</th>
                     <th>Tipo</th>
                     <th>Valor</th>
+                    <th>Requisito</th>
                     <th>Prioridad</th>
                     <th>Estado</th>
                     <th>Acción</th>
@@ -243,6 +244,11 @@
               <div class="adj-field adj-field--4">
                 <label>Estado</label>
                 <div class="adj-check"><input id="adj-active" type="checkbox" checked><label for="adj-active" style="margin:0;text-transform:none">Regla activa</label></div>
+              </div>
+              <div class="adj-field adj-field--4">
+                <label>Clasificación interna</label>
+                <div class="adj-check"><input id="adj-must-have" type="checkbox"><label for="adj-must-have" style="margin:0;text-transform:none">Must have</label></div>
+                <div class="adj-help">No se muestra al propietario; sirve para marcar requisitos esenciales.</div>
               </div>
               <div class="adj-field adj-field--12" id="adj-custom-wrap" hidden>
                 <label for="adj-condition">Condición personalizada (JSON)</label>
@@ -479,6 +485,7 @@
         <td>${esc(conditionLabel(x.condicion))}</td>
         <td>${x.tipo_ajuste==='porcentaje'?'Porcentaje':'Monto fijo USD'}</td>
         <td class="adj-value">${esc(adjustmentValue(x))}</td>
+        <td>${x.es_must_have?'<span class="adm-badge warn">Must have</span>':'<span class="adm-badge">Normal</span>'}</td>
         <td>${esc(x.prioridad)}</td>
         <td>${x.activo?'<span class="adm-badge ok">Activa</span>':'<span class="adm-badge">Inactiva</span>'}</td>
         <td><button class="adm-mini" type="button" data-adj-edit="${esc(x.id)}">Editar</button></td>`;
@@ -523,6 +530,7 @@
     document.getElementById('adj-type').value=rule?.tipo_ajuste||'porcentaje';
     document.getElementById('adj-value').value=rule?.valor??'';
     document.getElementById('adj-active').checked=rule?.activo!==false;
+    document.getElementById('adj-must-have').checked=rule?.es_must_have===true;
     document.getElementById('adj-notes').value=rule?.notas||'';
     document.getElementById('adj-condition').value=JSON.stringify(rule?.condicion||{},null,2);
     document.getElementById('adj-custom-wrap').hidden=preset!=='custom';
@@ -590,6 +598,7 @@
       tipo_ajuste:document.getElementById('adj-type').value,
       valor:Number(document.getElementById('adj-value').value),
       activo:document.getElementById('adj-active').checked,
+      es_must_have:document.getElementById('adj-must-have').checked,
       prioridad:Number(document.getElementById('adj-priority').value||100),
       notas:document.getElementById('adj-notes').value.trim()||null
     };
